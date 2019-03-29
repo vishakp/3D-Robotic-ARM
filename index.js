@@ -71,6 +71,7 @@ let CameraCapture = () => {
 }
 
 let RobotMaker = () => {
+  
   let self = {}
   self.models = {'base': null, 'body': null, 'arm1': null, 'arm2': null, 'hand': null}
   self.init = () => {
@@ -78,35 +79,49 @@ let RobotMaker = () => {
     self.light = new THREE.AmbientLight(0x333333)
     self.camera = new THREE.PerspectiveCamera(60, window.innerHeight / window.innerHeight, 1, 15000)
     self.renderer = new THREE.WebGLRenderer({antialias: true})
-    self.loader = new THREE.ObjectLoader()
-  }
-  self.init()
+    self.renderer.setClearColor('#e5e5e5')
+    self.loader = new THREE.ObjectLoader()    
   self.scene.add(self.light)
   self.camera.position = {x: 0, y: 0, z: 7000}
   self.renderer.setSize(window.innerWidth, window.innerHeight)
+  
   document.getElementById('robot').appendChild(self.renderer.domElement)
+  }
+  
+  
   self.assemble = (name, geometry) => {
+
     console.log('HH', name)
+    
     self.models[name] = geometry
     for (let part in self.models) { if (!self.models[part]) return }
-    let material = new THREE.MeshFaceMaterial()
-    let mesh = (name) => {
-      return new THREE.Mesh(self.models[name], material)
-    }
-    let base = mesh('base')
+    let material = new THREE.MeshBasicMaterial({
+      vertexColors: THREE.FaceColors,
+        overdraw: 0.5
+    })
+    // let mesh = (name) => {
+    //   return new THREE.Mesh(self.models[name], material)
+    // }
+    geometry.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+            child.material = material;
+        }
+    });
+    let base = new THREE.Object3D()
     let body = new THREE.Object3D()
     let arm1 = new THREE.Object3D()
     let arm2 = new THREE.Object3D()
     let hand = new THREE.Object3D()
+
     self.parts = [body, arm1, arm2, hand] // store the parts with joints
     base.add(body) // add body to base
-    body.add(mesh('body')) // add body mesh
+    // body.add(mesh('body')) // add body mesh
     body.add(arm1) // add arm to body
-    arm1.add(mesh('arm1')) // add arm1 mesh
+    // arm1.add(mesh('arm1')) // add arm1 mesh
     arm1.add(arm2) // add arm2 to arm1
-    arm2.add(mesh('arm2')) // add arm2 mesh
+    // arm2.add(mesh('arm2')) // add arm2 mesh
     arm2.add(hand) // add hand to arm2
-    hand.add(mesh('hand')) // hand mesh
+    // hand.add(mesh('hand')) // hand mesh
     body.control = 'y'
     arm1.control = arm2.control = hand.control = 'z'
     base.scale = {
@@ -137,25 +152,33 @@ let RobotMaker = () => {
     self.scene.add(base) // add object to scene
   }
   self.update = () => {
-    console.log('Updating')
     window.requestAnimationFrame(self.update)
     self.renderer.render(self.scene, self.camera)
   }
-  let assembler = (name) => {
+  let assembler = (name) => { 
+    console.log("part", name)
     return (geometry) => {
       self.assemble(name, geometry)
     }
   }
+  self.init()
   for (let part in self.models) {
-    self.loader.load('js/robot/robot_arm_' + part + '.json', assembler(part))
-    // assembler(part)()
+    
+    self.loader.load('js/robot/robot_arm_' + part + '.json',(obj)=>{
+      // assembler(obj);
+    assembler(part)(obj)
+    })
   }
 
+  self.update()
+  debugger;
   return self
 }
 
 let robot = RobotMaker()
+
 const camera = CameraCapture() // instantiate the object
+
 let vx = []
 let vy = []
 camera.callback = (x, y) => {
