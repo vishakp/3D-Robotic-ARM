@@ -6,7 +6,7 @@
 	},
 	"geometries": [
 		{
-			"uuid": "120E7274-CA95-4926-8C32-D754CCB4D614",
+			"uuid": "561954C8-B641-4BAE-8910-6E43E10A549C",
 			"type": "BoxBufferGeometry",
 			"width": 1,
 			"height": 1,
@@ -17,7 +17,7 @@
 		}],
 	"materials": [
 		{
-			"uuid": "E66BCFB3-4AE4-4A82-AF25-24C9482D78EF",
+			"uuid": "D52608B4-524F-4A81-8051-F6B56EDD4E83",
 			"type": "MeshStandardMaterial",
 			"color": 16777215,
 			"roughness": 0.5,
@@ -28,12 +28,12 @@
 			"depthWrite": true
 		}],
 	"object": {
-		"uuid": "E30E8C57-35D3-4A22-AB05-AFA3736682BB",
+		"uuid": "71F34F8E-BB44-4053-B944-62C01B73711D",
 		"type": "Mesh",
 		"name": "Box",
 		"layers": 1,
-		"matrix": [0.363826,0,0.141393,0,-0.069695,0.494156,0.179335,0,-0.504921,-0.542722,1.299235,0,-2.615978,3.802764,5.270618,1],
-		"geometry": "120E7274-CA95-4926-8C32-D754CCB4D614",
-		"material": "E66BCFB3-4AE4-4A82-AF25-24C9482D78EF"
+		"matrix": [0.033236,0,-0.264171,0,0.710429,-0.699908,0.08938,0,-0.127442,-0.131405,-0.016034,0,0,0,0,1],
+		"geometry": "561954C8-B641-4BAE-8910-6E43E10A549C",
+		"material": "D52608B4-524F-4A81-8051-F6B56EDD4E83"
 	}
 }

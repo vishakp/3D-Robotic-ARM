@@ -6,7 +6,7 @@
 	},
 	"geometries": [
 		{
-			"uuid": "7CCECD20-155A-4F58-9A38-AB15234F74DC",
+			"uuid": "FA85AE53-AFF2-4B94-81A5-AA47815C3692",
 			"type": "CylinderBufferGeometry",
 			"radiusTop": 1,
 			"radiusBottom": 1,
@@ -17,23 +17,23 @@
 		}],
 	"materials": [
 		{
-			"uuid": "F87BA3CB-72A3-4F89-BBE7-B3FCEEE89502",
+			"uuid": "E6378A79-1BCA-40FA-839B-942203F9A659",
 			"type": "MeshStandardMaterial",
 			"color": 16777215,
 			"roughness": 0.5,
 			"metalness": 0.5,
-			"emissive": 11908352,
+			"emissive": 16776960,
 			"depthFunc": 3,
 			"depthTest": true,
 			"depthWrite": true
 		}],
 	"object": {
-		"uuid": "62E5424F-0B29-43CB-96B1-804F60518334",
+		"uuid": "74D09241-812B-47D9-91F5-B831EEDC2D9F",
 		"type": "Mesh",
 		"name": "Cylinder",
 		"layers": 1,
-		"matrix": [0.427936,0,0.218977,0,-1.732647,-1.287135,3.386034,0,0.072438,-0.469916,-0.141563,0,-1.469763,4.256639,2.938196,1],
-		"geometry": "7CCECD20-155A-4F58-9A38-AB15234F74DC",
-		"material": "F87BA3CB-72A3-4F89-BBE7-B3FCEEE89502"
+		"matrix": [0.492489,0,0,0,0,4.700713,0,0,0,0,1,0,0,0,0,1],
+		"geometry": "FA85AE53-AFF2-4B94-81A5-AA47815C3692",
+		"material": "E6378A79-1BCA-40FA-839B-942203F9A659"
 	}
 }
