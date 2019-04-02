@@ -11,8 +11,10 @@ let CameraCapture = () => {
   self.acc = self.cs.createImageData(self.webcam.width, self.webcam.height)
   self.callback = null
   self.init = () => {
-    navigator.mediaDevices.getUserMedia({audio: false, video: true}).then((stream) => {
-      console.log(stream)
+    navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: true
+    }).then((stream) => {
       self.webcam.srcObject = stream
     }).catch((e) => {
       console.log(e)
@@ -40,7 +42,10 @@ let CameraCapture = () => {
           acc = Math.min(acc + 10, 255)
           x = j % width
           y = j / width
-          if (y < self.topy) { self.topx = x / 4; self.topy = y };
+          if (y < self.topy) {
+            self.topx = x / 4;
+            self.topy = y
+          };
         }
       }
       accumulator[j + 0] = acc
@@ -70,108 +75,92 @@ let CameraCapture = () => {
 }
 
 var RobotMaker = () => {
-    var self = {}
-    self.models = { 'base': null, 'body': null, 'arm1': null, 'arm2': null, 'hand': null }
-    var init = () => {
+  var self = {}
+  self.models = {
+    'base': null,
+    'body': null,
+    'arm1': null,
+    'arm2': null,
+    'hand': null
+  }
+  var init = () => {
+    self.scene = new THREE.Scene()
+    self.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    self.light = new THREE.AmbientLight(0x404040, 2)
+    self.loader = new THREE.ObjectLoader()
+    self.renderer = new THREE.WebGLRenderer()
+    self.renderer.setSize(400, 400)
+    self.renderer.setClearColor('#e5e5e5')
+    self.scene.add(self.light)
+    document.body.appendChild(self.renderer.domElement)
+  }
 
-        self.scene = new THREE.Scene();
-        self.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        self.light = new THREE.AmbientLight(0x404040, 2);
-        self.loader = new THREE.ObjectLoader();
-        self.renderer = new THREE.WebGLRenderer();
-        self.renderer.setSize(window.innerWidth, window.innerHeight);
-        self.renderer.setClearColor('#e5e5e5')
-        self.scene.add(self.light)
-        document.body.appendChild(self.renderer.domElement);
-    }
+  init()
 
-    init();
+  self.assemble = () => {
+    // for (let part in self.models) {
+    //     console.log(part)
+    //     if (!self.models[part]) return
+    // }
+    // let base = self.models.base
+    // let body = new THREE.Object3D()
+    // let arm1 = new THREE.Object3D()
+    // let arm2 = new THREE.Object3D()
+    // let hand = new THREE.Object3D()
 
-    self.assemble = () => {
-        // for (let part in self.models) {
-        //     console.log(part)
-        //     if (!self.models[part]) return
-        // }
-        // let base = self.models.base
-        // let body = new THREE.Object3D()
-        // let arm1 = new THREE.Object3D()
-        // let arm2 = new THREE.Object3D()
-        // let hand = new THREE.Object3D()
-
-        console.log(self.models)
-
-        self.models.body.control = 'y'
-        self.models.arm1.control = self.models.arm2.control = self.models.hand.control = 'z'
-        self.models.base.scale = {
-            x: 80,
-            y: 80,
-            z: 80
-        }
-        self.models.body.position = {
-            x: 0,
-            y: 18,
-            z: 0
-        }
-        self.models.arm1.position = {
-            x: 0,
-            y: -8,
-            z: 0
-        }
-        self.models.arm2.position = {
-            x: -14.5,
-            y: 13,
-            z: 0
-        }
-        self.models.hand.position = {
-            x: -10.5,
-            y: 5.5,
-            z: 0
-        }
-
-        self.parts = new THREE.Group()
-        self.parts.add(self.models.base)
-        self.parts.add(self.models.body)
-        self.parts.add(self.models.arm1)
-        self.parts.add(self.models.arm2)
-        self.parts.add(self.models.hand)
-        console.log("Parts group", self.parts)
-        self.scene.add(self.parts)
-
-    }
-
-    var addElement = () => {
-        for (let part in self.models) {
-            self.loader.load('js/robot/robot_arm_' + part + '.json', (obj) => {
-                self.models[part] = obj;
-            })
-        }
-        setTimeout(() => {
-            self.assemble();
-            console.log("models: ", self.models)
-        }, 2000)
-        // var geometry = new THREE.BoxGeometry(1, 1, 1);
-        // var material = new THREE.MeshBasicMaterial({ color: 0x559966 });
-        // var cube = new THREE.Mesh(geometry, material);
-
-    }
-    addElement();
-
-
-    self.camera.position.z = 15;
-
-    var update = function() {
-        requestAnimationFrame(update);
-        // cube.rotation.x += 0.01;
-        // cube.rotation.y += 0.01;
-        self.renderer.render(self.scene, self.camera);
+    self.models.body.control = 'y'
+    self.models.arm1.control = self.models.arm2.control = self.models.hand.control = 'z'
+    let material = new THREE.MeshFaceMaterial();
+    let mesh = (name) => {
+      return new THREE.Mesh(self.models[name], material);
     };
+    let base = self.models.base
+    let body = new THREE.Group()
+    let arm1 = new THREE.Group()
+    let arm2 = new THREE.Group()
+    let hand = new THREE.Group()
+    self.parts = [body, arm1, arm2, hand];
+    
+    base.add(body)
+    body.add(self.models.body)
+    body.add(arm1)
+    arm1.add(self.models.arm1)
+    arm1.add(arm2)
+    arm2.add(self.models.arm2)
+    arm2.add(hand)
+    hand.add(self.models.hand)
+    body.control = 'y'
+    arm1.control = arm2.control = hand.control = 'z'
+    self.models.base.scale.set(0.8,0.8,0.8)
+    self.models.base.position.set(0, 0, 0)
 
-    update();
-    return self;
+    
+    self.scene.add(base)
+  }
+  var addElement = () => {
+    for (let part in self.models) {
+      self.loader.load('js/robot/robot_arm_' + part + '.json', (obj) => {
+        self.models[part] = obj
+      })
+    }
+    setTimeout(() => {
+      self.assemble()
+    }, 2000)
+  }
+  addElement()
+
+  self.camera.position.z = 15
+
+  var update = function () {
+    window.requestAnimationFrame(update)
+    self.renderer.render(self.scene, self.camera)
+  }
+
+  update()
+  return self
 }
 
 let robot = RobotMaker()
-console.log("Robot",robot)
 const camera = CameraCapture() // instantiate the object
 
 let vx = []
@@ -185,14 +174,15 @@ camera.callback = (x, y) => {
     vx.reduce((a, b) => {
       return a + b
     }, 0) / 3
-  let phi = vy.reduce((a, b) => { return a + b }, 0) / 10 - 0.5
-  setTimeout(() => {
-    if (robot.parts.children.length) {
-        console.log("RoboParts", robot.parts.children)
-      robot.parts.children[0].rotation.y = theta
-      robot.parts.children[1].rotation.z = phi
-      robot.parts.children[2].rotation.z = phi
-      robot.parts.children[3].rotation.z = phi
+  let phi = vy.reduce((a, b) => {
+    return a + b
+  }, 0) / 10 - 0.5
+  if (robot.parts){
+    if (robot.parts.length) {
+      robot.parts[0].rotation.y = theta
+      robot.parts[1].rotation.z = phi
+      robot.parts[2].rotation.z = phi
+      robot.parts[3].rotation.z = phi
     }
-  }, 2000)
+  }
 }

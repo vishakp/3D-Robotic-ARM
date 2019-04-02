@@ -3,10 +3,18 @@
 
 <head>
   <base href="/">
+  <link rel="stylesheet" href="main.css">
   <script src="three.js"></script>
   <script src="LegacyJSONLoader.js"></script>
   <style>
-    .video{
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+    }
+
+    .video {
       position: absolute;
       visibility: hidden;
       z-index: -1;
@@ -19,11 +27,17 @@
 <body>
   <div id="robot"></div>
   <video class="video" id="webcam-source" muted width="640" height="480" autoplay></video>
-  <center>
-    <canvas style="width:200px" id="canvas-src" width="640" height="480"></canvas>
-    <canvas style="width:200px" id="canvas-acc" width="640" height="480"></canvas>
-    <canvas style="width:200px" id="canvas-dif" width="640" height="480"></canvas>
-  </center>
+  <div class="canvas-containers">
+    <div>
+      <canvas style="height:100%" id="canvas-dif" width="640" height="480"></canvas>
+    </div>
+    <div>
+      <canvas style="height:100%" id="canvas-acc" width="640" height="480"></canvas>
+    </div>
+    <div>
+      <canvas style="height:100%" id="canvas-src" width="640" height="480"></canvas>
+    </div>
+  </div>
   <script src="main.js"></script>
   <!-- <video id="test" autoplay></video>
   <script>
