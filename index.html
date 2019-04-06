@@ -3,18 +3,9 @@
 
 <head>
   <base href="/">
-  <link rel="stylesheet" href="main.css">
   <script src="three.js"></script>
-  <script src="LegacyJSONLoader.js"></script>
   <style>
-    html,
-    body {
-      height: 100%;
-      width: 100%;
-      margin: 0px;
-    }
-
-    .video {
+    .video{
       position: absolute;
       visibility: hidden;
       z-index: -1;
@@ -27,30 +18,13 @@
 <body>
   <div id="robot"></div>
   <video class="video" id="webcam-source" muted width="640" height="480" autoplay></video>
-  <div class="canvas-containers">
-    <div>
-      <canvas style="height:100%" id="canvas-dif" width="640" height="480"></canvas>
-    </div>
-    <div>
-      <canvas style="height:100%" id="canvas-acc" width="640" height="480"></canvas>
-    </div>
-    <div>
-      <canvas style="height:100%" id="canvas-src" width="640" height="480"></canvas>
-    </div>
-  </div>
+  <center>
+    <canvas style="width:200px" id="canvas-src" width="640" height="480"></canvas>
+    <canvas style="width:200px" id="canvas-acc" width="640" height="480"></canvas>
+    <canvas style="width:200px" id="canvas-dif" width="640" height="480"></canvas>
+  </center>
   <script src="main.js"></script>
-  <!-- <video id="test" autoplay></video>
-  <script>
-    window.onload = ()=>{
-      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-        console.log(window.URL)
-        let video = document.getElementById('test')
-        video.srcObject = stream;
-      }).catch((e) => {
-        console.log(e)
-      })
-    }
-  </script> -->
+ 
 </body>
 
 </html>

@@ -89,24 +89,15 @@ var RobotMaker = () => {
     self.light = new THREE.AmbientLight(0x404040, 2)
     self.loader = new THREE.ObjectLoader()
     self.renderer = new THREE.WebGLRenderer()
-    self.renderer.setSize(400, 400)
+    self.renderer.setSize(window.innerWidth, window.innerHeight)
     self.renderer.setClearColor('#e5e5e5')
     self.scene.add(self.light)
     document.body.appendChild(self.renderer.domElement)
   }
 
-  init()
-
+  init();
   self.assemble = () => {
-    // for (let part in self.models) {
-    //     console.log(part)
-    //     if (!self.models[part]) return
-    // }
-    // let base = self.models.base
-    // let body = new THREE.Object3D()
-    // let arm1 = new THREE.Object3D()
-    // let arm2 = new THREE.Object3D()
-    // let hand = new THREE.Object3D()
+ 
 
     self.models.body.control = 'y'
     self.models.arm1.control = self.models.arm2.control = self.models.hand.control = 'z'
@@ -150,7 +141,6 @@ var RobotMaker = () => {
   addElement()
 
   self.camera.position.z = 15
-
   var update = function () {
     window.requestAnimationFrame(update)
     self.renderer.render(self.scene, self.camera)
@@ -180,9 +170,12 @@ camera.callback = (x, y) => {
   if (robot.parts){
     if (robot.parts.length) {
       robot.parts[0].rotation.y = theta
-      robot.parts[1].rotation.z = phi
-      robot.parts[2].rotation.z = phi
-      robot.parts[3].rotation.z = phi
+      // robot.parts[1].rotation.z = phi
+      // robot.parts[2].rotation.z = phi
+      // robot.parts[3].rotation.z = phi
     }
   }
 }
+
+
+
