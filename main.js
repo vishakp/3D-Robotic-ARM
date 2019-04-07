@@ -85,68 +85,81 @@ var RobotMaker = () => {
   }
   var init = () => {
     self.scene = new THREE.Scene()
-    self.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    self.camera = new THREE.Camera(75, window.innerWidth / window.innerHeight, 1, 15000)
     self.light = new THREE.AmbientLight(0x404040, 2)
-    self.loader = new THREE.ObjectLoader()
+    self.loader = new THREE.JSONLoader();
     self.renderer = new THREE.WebGLRenderer()
     self.renderer.setSize(window.innerWidth, window.innerHeight)
     self.renderer.setClearColor('#e5e5e5')
-    self.scene.add(self.light)
+    self.scene.addLight(self.light)
+    self.scene.background = new THREE.Color(0xe5e5e5) 
     document.body.appendChild(self.renderer.domElement)
   }
 
   init();
-  self.assemble = () => {
- 
+  self.assemble = (name, geometry) => {
+   self.models[name] = geometry;
+   for(let part in self.models) if(!self.models[part]) return;
 
-    self.models.body.control = 'y'
-    self.models.arm1.control = self.models.arm2.control = self.models.hand.control = 'z'
+    // self.models.body.control = 'y'
+    // self.models.arm1.control = self.models.arm2.control = self.models.hand.control = 'z'
     let material = new THREE.MeshFaceMaterial();
     let mesh = (name) => {
       return new THREE.Mesh(self.models[name], material);
     };
-    let base = self.models.base
-    let body = new THREE.Group()
-    let arm1 = new THREE.Group()
-    let arm2 = new THREE.Group()
-    let hand = new THREE.Group()
+    let base = mesh('base')
+    let body = new THREE.Object3D()
+    let arm1 = new THREE.Object3D()
+    let arm2 = new THREE.Object3D()
+    let hand = new THREE.Object3D()
     self.parts = [body, arm1, arm2, hand];
     
-    base.add(body)
-    body.add(self.models.body)
-    body.add(arm1)
-    arm1.add(self.models.arm1)
-    arm1.add(arm2)
-    arm2.add(self.models.arm2)
-    arm2.add(hand)
-    hand.add(self.models.hand)
+    base.addChild(body); // add body to base
+    body.addChild(mesh('body')); // add body mesh
+    body.addChild(arm1); // add arm to body
+    arm1.addChild(mesh('arm1')); // add arm1 mesh
+    arm1.addChild(arm2); // add arm2 to arm1
+    arm2.addChild(mesh('arm2')); // add arm2 mesh
+    arm2.addChild(hand); // add hand to arm2
+    hand.addChild(mesh('hand')); // hand mesh
+    // base.add(body)
+    // body.add(self.models.body)
+    // body.add(arm1)
+    // arm1.add(self.models.arm1)
+    // arm1.add(arm2)
+    // arm2.add(self.models.arm2)
+    // arm2.add(hand)
+    // hand.add(self.models.hand)
     body.control = 'y'
     arm1.control = arm2.control = hand.control = 'z'
-    self.models.base.scale.set(0.8,0.8,0.8)
-    self.models.base.position.set(0, 0, 0)
+    base.scale = {x:75, y:75, z:75};
+    base.position = {x:0, y: -20, z:0}
+    body.position = {x:0, y:18, z:0};
+    arm1.position = {x:0, y:-8, z:0};
+    arm2.position = {x:-14.5, y:13, z:0};
+    hand.position = {x:-18.5, y:5.5, z:0};
+    self.scene.addObject(base); // add object to scene
 
     
-    self.scene.add(base)
+    // self.scene.add(base)
   }
-  var addElement = () => {
-    for (let part in self.models) {
-      self.loader.load('js/robot/robot_arm_' + part + '.json', (obj) => {
-        self.models[part] = obj
-      })
-    }
-    setTimeout(() => {
-      self.assemble()
-    }, 2000)
-  }
-  addElement()
-
-  self.camera.position.z = 15
-  var update = function () {
-    window.requestAnimationFrame(update)
+  self.update = function () {
+    window.requestAnimationFrame(self.update)
     self.renderer.render(self.scene, self.camera)
   }
 
-  update()
+    let assembler = (name) => {
+    return (geometry) => {self.assemble(name, geometry);} };
+    for(let part in self.models)
+    self.loader.load({ model: 'js/robot/robot_arm_'+part+'.js',
+    callback: assembler(part)});
+    self.update();
+
+  self.camera.position.z = 8000
+  self.camera.position.y = 50
+  
+
+
   return self
 }
 
@@ -170,9 +183,9 @@ camera.callback = (x, y) => {
   if (robot.parts){
     if (robot.parts.length) {
       robot.parts[0].rotation.y = theta
-      // robot.parts[1].rotation.z = phi
-      // robot.parts[2].rotation.z = phi
-      // robot.parts[3].rotation.z = phi
+      robot.parts[1].rotation.z = phi
+      robot.parts[2].rotation.z = phi
+      robot.parts[3].rotation.z = phi
     }
   }
 }
